@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title></title>
+    <title><![CDATA[maven使用问题积累]]></title>
     <url>%2F2018%2F07%2F11%2Fmaven%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98%E7%A7%AF%E7%B4%AF%2F</url>
-    <content type="text"></content>
+    <content type="text"><![CDATA[写在前面Maven是一个项目管理和综合工具，能让我们很轻松完成项目构建和自动化测试。本篇以问答的形式对近来被问到过的maven的相关问题做下总结，谨做为知识积累，供大家查阅。后续工作过程中如果大家有遇到这方面的其他问题，欢迎一起补充完善~~ maven的依赖传递Q1: 父pom中使用 声明了A、B的依赖，版本设置为1.0。 版本同为1.0，A、B、C三个项目中，B依赖A，C同时依赖A、B，项目C继承父POM，同时在其项目的pom中加入B依赖，version为2.0。B 2.0 也继承了父pom，同时在其项目的pom中有A 2.0的依赖。这种情况下，对项目C执行mvn package，发现项目C的jar lib中包含的A为1.0版本，B为2.0版本。何解？ A1: 这个问题与maven 的传递性依赖有关，先看官方文档对于传递性依赖的定义及其规则。中文文档可参考，但具体释义建议以官方文档为准。 传递性依赖是maven2.0以后出现的新的特性。当你的项目依赖库A，而库A又依赖库B和库C时，传递性依赖使得你项目添加A依赖时，就能帮你把A依赖的其他库B和C也隐式添加到你的项目中，从而避免去寻找所有依赖。该特性依靠解析远端仓库的依赖库的项目文件得以实现的。传递性依赖没有嵌套深度的限制，但是当出现循环依赖的时候会报错。传递性依赖使得包含的依赖库得以很快增长，因为这个原因，依赖性做了一些限制性规定，来确定选择哪些依赖库。 依赖调解：当依赖库存在多个版本时，遵循最小路径原则，在2.0.9版本以后，如果遇到路径相同的依赖库，遵循最先声明原则。最小路径原则，即存在两个不同版本的库时，优先选择依赖树中路径最短的版本。如果，A、B、C、D依赖关系 A -&gt; B -&gt; C -&gt; D 2.0，而A -&gt; E -&gt; D 1.0，则在构建A时，D1.0会被使用。因为A -&gt; E -&gt; D中从A到D的路径更短。如果需要使用依赖A，应直接使用在pom中显示添加D2.0的依赖。 依赖管理：在传递性依赖或者当没有指定依赖版本时，项目作者可以通过依赖管理直接指定依赖的版本。在前述的例子中，A未直接依赖D，但D是A的依赖库。这时，A可以将D做为依赖管理部分的一个依赖，使用 ，在D可能会被引入的时候，控制D的版本。 依赖范围 – 你可以指定只在当前编译范围内包含合适的依赖 排除依赖 如果项目X依赖于项目Y，项目Y又依赖项目Z，项目X的所有者可以使用”exclusion”元素来显式排除项目Z 可选依赖 – 如果项目Y依赖项目Z，项目Y的所有者可以使用”optional”元素来指定项目Z作为X的可选依赖。那么当项目X依赖项目Y时，X只依赖Y并不依赖Y的可选依赖Z。 依赖管理部分，官方文档给予了更为详细的解释，并给出了一些示例，结合示例，归纳了两条原则： 在传递性依赖中，依赖管理的优先级高于依赖调解 当前pom中依赖声明的优先级高于父pom的依赖声明 以上内容均从官方文档获得。从依赖调解和依赖管理两部分内容看，问题中的C-&gt;B-&gt;A, C通过依赖传递获得A的依赖，而在C的父pom中使用dependencyManagement管理确定了A的版本，所以按照依赖管理原则，A的版本为1.0，而B因为在C项目的pom中有声明version，以项目自身pom为准，B的版本为2.0。 maven compiler使用相关Q2: 本地安装了多个jdk版本，希望maven compile在编译一些项目时使用特定版本的jdk，而非缺省jdk版本。 A2:问题可以分为两种情况解答： 本地如果为有桌面系统，可使用IDE工具，建议按照IDE工具的配置方法来设置项目编译使用的JDK版本及编译级别。以IDEA为例，先设置java编译器，file-&gt;setting-&gt;java compile，以jdk1.8为例，设置如下： setting属性设置完成后，进入file-&gt;project structure-&gt;project 设置项目的sdk及编译级别 file-&gt;project structure -&gt;modules 设置各模块的sdk及编译级别 本地如果为linux环境且无可视化界面，可按照maven官方提供的文档来设置项目所需要javac的绝对路径，具体配置123456789101112131415161718192021&lt;project&gt; [...] &lt;build&gt; [...] &lt;plugins&gt; &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt; &lt;version&gt;3.7.0&lt;/version&gt; &lt;configuration&gt; &lt;verbose&gt;true&lt;/verbose&gt; &lt;fork&gt;true&lt;/fork&gt; &lt;executable&gt;&lt;!-- path-to-javac --&gt;&lt;/executable&gt; &lt;compilerVersion&gt;1.7&lt;/compilerVersion&gt; &lt;/configuration&gt; &lt;/plugin&gt; &lt;/plugins&gt; [...] &lt;/build&gt; [...]&lt;/project&gt; 当然，此处指定的javac版本仅用于maven compiler插件，其他插件仍使用默认jdk版本。 path-to-javac 为本地javac的绝对安装路径， 可以写成硬编码，不过建议最好利用环境变量或者maven的setting.xml文件将该路径做成可配置项。可参考：1&lt;executable&gt;$&#123;JAVA_1_7_HOME&#125;/bin/javac&lt;/executable&gt; 未完待续……]]></content>
+      <categories>
+        <category>工具学习</category>
+      </categories>
+      <tags>
+        <tag>maven</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[多模块项目jacoco 覆盖率统计]]></title>
