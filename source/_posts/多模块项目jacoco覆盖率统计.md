@@ -18,15 +18,8 @@ jacoco是在我们项目中广泛使用的覆盖率统计工具，关于其特�
 ```
 <properties>
     <!--sonar集成-->
-    <sonar.language>java</sonar.language>
-    <sonar.branch>${project.version}</sonar.branch>
-    <sonar.jdbc.username>sonar</sonar.jdbc.username>
-    <sonar.jdbc.password>sonar</sonar.jdbc.password>
-    <sonar.jdbc.url>jdbc:mysql://10.9.0.137:3306/sonarold</sonar.jdbc.url>
-    <sonar.jdbc.driver>com.mysql.jdbc.Driver</sonar.jdbc.driver>
-    <sonar.host.url>http://10.9.0.137:29000</sonar.host.url>
-    <sonar.dynamicAnalysis>true</sonar.dynamicAnalysis>
-    <sonar.profile>wangyin-plat</sonar.profile>
+    <sonar.language>java</sonar.language>    
+    <sonar.dynamicAnalysis>true</sonar.dynamicAnalysis> 
     <sonar.jacoco.itReportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.itReportPath>
     <!--排除不需要统计覆盖率的部分，：为分割符-->
     <sonar.jacoco.excludes>
