@@ -286,6 +286,372 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://jdjrhzqa.github.io/2018/07/20/java微基准测试工具--JMH/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="白盒测试组">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="京东金融杭州QA">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/20/java微基准测试工具--JMH/" itemprop="url">java微基准性能测试工具</a></h1>
+        
+		
+        <div class="post-meta">
+		
+			 
+              <div class="post-author">			  
+                  郑琳
+              </div>
+          
+		  
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-20T00:00:00+08:00">
+                2018-07-20
+              </time>
+            
+
+            
+
+            
+          </span>	
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具学习/" itemprop="url" rel="index">
+                    <span itemprop="name">工具学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+		  
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/07/20/java微基准测试工具--JMH/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/07/20/java微基准测试工具--JMH/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/07/20/java微基准测试工具--JMH/" class="leancloud_visitors" data-flag-title="java微基准性能测试工具">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          		    
+
+          	  
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h4 id="JMH简介"><a href="#JMH简介" class="headerlink" title="JMH简介"></a>JMH简介</h4><p>发现JMH这个工具源于阅读jdk8教程时看到了一篇名为<a href="https://wizardforcel.gitbooks.io/java8-tutorials/content/Java%208%20Lambda%20%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%92%8C%E6%B5%81%E6%93%8D%E4%BD%9C%E5%A6%82%E4%BD%95%E8%AE%A9%E4%BD%A0%E7%9A%84%E4%BB%A3%E7%A0%81%E5%8F%98%E6%85%A25%E5%80%8D.html" target="_blank" rel="noopener">Java8 Lambda表达式和流操作如何让你的代码变慢5倍</a>的文章，其在做性能测试时用到了JDK官方的microbenchmark 工具JMH，后来在阅读oracle的<a href="http://www.oracle.com/technetwork/java/jvmls2013kuksen-2014088.pdf" target="_blank" rel="noopener">lambda表达式的性能研究报告</a>时发现其测试代码也用了JMH工具，以此认为，对于测试同学来说，JMH这个工具是很有必要了解的。</p>
+<p>JMH 全称为java mircobenchmark harness。microbenchmark代表其测试粒度可以足够小，可能比测试计时代码本身还要小，此时观察者会影响到被观察者，测试统计结果会出现偏差，所以需要专门的工具。JMH的开发者和JIT开发者是同一个群人，其很大可能会与官方JRE的更新同步，也因为作者更了解JVM，其测试结果会更可靠。 </p>
+<p><a href="http://openjdk.java.net/projects/code-tools/jmh/" target="_blank" rel="noopener">官方</a>对于JMH的介绍惜墨如金，简单总结下来就是：</p>
+<ol>
+<li>可用于构建、运行及分析不限于java 等基于jvm语言的毫微、微小及大的基准测试。</li>
+<li>方便使用maven快速搭建基准测试工程</li>
+</ol>
+<p>JMH目前典型使用的场景有：</p>
+<ol>
+<li>在定位到热点方法后，为热点方法进行进一步优化时，可以使用JMH进行定量调优分析。</li>
+<li>想定量了解某个方法的执行时长，及参数对执行时长的影响</li>
+<li>当方法有两种不同实现时，用JMH确定哪种实现性能更优。</li>
+</ol>
+<p>从使用场景上来看，JMH对于我们当前性能测试场景直接使用的意义可能不大，但是对性能测试结果分析和调优会有一些帮助。本篇引入这个工具主要有两个目的，其一是了解官方工具，拓宽一下眼界，二则为性能调优做一些知识积累。</p>
+<h4 id="JMH使用"><a href="#JMH使用" class="headerlink" title="JMH使用"></a>JMH使用</h4><h5 id="项目搭建、构建及运行"><a href="#项目搭建、构建及运行" class="headerlink" title="项目搭建、构建及运行"></a>项目搭建、构建及运行</h5><p>官方推荐的项目搭建方式是，使用mvn快速搭建一个独立的项目用于基准测试，将应用的jar文件做为依赖引入。这种方法可以更好地保证结果的可靠性。在已有项目或者IDE中运行基准测试也是可行的，但是因启动更加复杂，结果可靠性会降低。</p>
+<p>使用JMH的关键在于使用注解或字节码生成器来生成合成的基准代码。maven可以帮助更好的实现这一目的，具体操作步骤如下：</p>
+<ol>
+<li>使用maven命令行快速搭建起基准测试工程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mvn archetype:generate \</span><br><span class="line">          -DinteractiveMode=false \</span><br><span class="line">          -DarchetypeGroupId=org.openjdk.jmh \</span><br><span class="line">          -DarchetypeArtifactId=jmh-java-benchmark-archetype \</span><br><span class="line">          -DgroupId=$&#123;yourself-groupId&#125; \</span><br><span class="line">          -DartifactId=test \</span><br><span class="line">          -Dversion=$&#123;whatever-you-want&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>此处，如果使用了其他jvm 语言，可以将archetypeArtifactId修改成对应语言的，具体参见<a href="http://central.maven.org/maven2/org/openjdk/jmh/" target="_blank" rel="noopener">list</a></p>
+<p>该步骤可以快速搭建使用JMH所需要的所有依赖，并配置好项目的编译打包参数。<br>对于已有项目，可以参照mvn 原型中的pom文件增加JMH相关依赖和maven-shade-plugin插件来配置JMH工程所需。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">           &lt;groupId&gt;org.openjdk.jmh&lt;/groupId&gt;</span><br><span class="line">           &lt;artifactId&gt;jmh-core&lt;/artifactId&gt;</span><br><span class="line">           &lt;version&gt;$&#123;jmh.version&#125;&lt;/version&gt;</span><br><span class="line">       &lt;/dependency&gt;</span><br><span class="line">       &lt;dependency&gt;</span><br><span class="line">           &lt;groupId&gt;org.openjdk.jmh&lt;/groupId&gt;</span><br><span class="line">           &lt;artifactId&gt;jmh-generator-annprocess&lt;/artifactId&gt;</span><br><span class="line">           &lt;version&gt;$&#123;jmh.version&#125;&lt;/version&gt;</span><br><span class="line">           &lt;scope&gt;provided&lt;/scope&gt;</span><br><span class="line">       &lt;/dependency&gt;</span><br><span class="line">       </span><br><span class="line">   &lt;build&gt;</span><br><span class="line">       &lt;plugins&gt;</span><br><span class="line">        &lt;plugin&gt;</span><br><span class="line">               &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;</span><br><span class="line">               &lt;artifactId&gt;maven-shade-plugin&lt;/artifactId&gt;</span><br><span class="line">               &lt;version&gt;2.2&lt;/version&gt;</span><br><span class="line">               &lt;executions&gt;</span><br><span class="line">                   &lt;execution&gt;</span><br><span class="line">                       &lt;phase&gt;package&lt;/phase&gt;</span><br><span class="line">                       &lt;goals&gt;</span><br><span class="line">                           &lt;goal&gt;shade&lt;/goal&gt;</span><br><span class="line">                       &lt;/goals&gt;</span><br><span class="line">                       &lt;configuration&gt;</span><br><span class="line">                           &lt;finalName&gt;$&#123;uberjar.name&#125;&lt;/finalName&gt;</span><br><span class="line">                           &lt;transformers&gt;</span><br><span class="line">                               &lt;transformer implementation=&quot;org.apache.maven.plugins.shade.resource.ManifestResourceTransformer&quot;&gt;</span><br><span class="line">                                   &lt;mainClass&gt;org.openjdk.jmh.Main&lt;/mainClass&gt;</span><br><span class="line">                               &lt;/transformer&gt;</span><br><span class="line">                           &lt;/transformers&gt;</span><br><span class="line">                           &lt;filters&gt;</span><br><span class="line">                               &lt;filter&gt;</span><br><span class="line">                                   &lt;!--</span><br><span class="line">                                       Shading signed JARs will fail without this.</span><br><span class="line">                                       http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar</span><br><span class="line">                                   --&gt;</span><br><span class="line">                                   &lt;artifact&gt;*:*&lt;/artifact&gt;</span><br><span class="line">                                   &lt;excludes&gt;</span><br><span class="line">                                       &lt;exclude&gt;META-INF/*.SF&lt;/exclude&gt;</span><br><span class="line">                                       &lt;exclude&gt;META-INF/*.DSA&lt;/exclude&gt;</span><br><span class="line">                                       &lt;exclude&gt;META-INF/*.RSA&lt;/exclude&gt;</span><br><span class="line">                                   &lt;/excludes&gt;</span><br><span class="line">                               &lt;/filter&gt;</span><br><span class="line">                           &lt;/filters&gt;</span><br><span class="line">                       &lt;/configuration&gt;</span><br><span class="line">                   &lt;/execution&gt;</span><br><span class="line">               &lt;/executions&gt;</span><br><span class="line">           &lt;/plugin&gt;</span><br><span class="line">       &lt;/plugins&gt;</span><br><span class="line">   &lt;/build&gt;</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>执行基准构建<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /test</span><br><span class="line">mvn clean install</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>该步骤执行mvn install，完成打包并将jar放在本地仓库中。按照pom文件中打包配置，打好的包为可执行jar包。</p>
+<ol start="3">
+<li>补充完成基准测试代码，注意代码路径应位于/src/main/java 中, 需要为测试代码添加注解@Benchmark</li>
+<li>运行基准测试。命令为<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar target/benchmarks.jar</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>以上为项目快速搭建、构建及执行所需要的命令。</p>
+<h5 id="使用示例和说明"><a href="#使用示例和说明" class="headerlink" title="使用示例和说明"></a>使用示例和说明</h5><p>官方提供了很多示例用于说明工具的使用及注解，但是文档方面的内容几乎没有。下面将结合<a href="http://hg.openjdk.java.net/code-tools/jmh/file/3769055ad883/jmh-samples/src/main/java/org/openjdk/jmh/samples/JMHSample_38_PerInvokeSetup.java" target="_blank" rel="noopener">官网的demo</a>和<a href="http://java-performance.info/jmh/" target="_blank" rel="noopener">Java Performance Tuning Guide的文章</a>及其<a href="http://www.importnew.com/12548.html" target="_blank" rel="noopener">译文</a>对工具如何使用和注解做详细说明。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * Copyright (c) 2015, Oracle America, Inc.</span><br><span class="line"> * All rights reserved.</span><br><span class="line"> *</span><br><span class="line"> * Redistribution and use in source and binary forms, with or without</span><br><span class="line"> * modification, are permitted provided that the following conditions are met:</span><br><span class="line"> *</span><br><span class="line"> *  * Redistributions of source code must retain the above copyright notice,</span><br><span class="line"> *    this list of conditions and the following disclaimer.</span><br><span class="line"> *</span><br><span class="line"> *  * Redistributions in binary form must reproduce the above copyright</span><br><span class="line"> *    notice, this list of conditions and the following disclaimer in the</span><br><span class="line"> *    documentation and/or other materials provided with the distribution.</span><br><span class="line"> *</span><br><span class="line"> *  * Neither the name of Oracle nor the names of its contributors may be used</span><br><span class="line"> *    to endorse or promote products derived from this software without</span><br><span class="line"> *    specific prior written permission.</span><br><span class="line"> *</span><br><span class="line"> * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span><br><span class="line"> * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span><br><span class="line"> * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span><br><span class="line"> * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE</span><br><span class="line"> * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</span><br><span class="line"> * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</span><br><span class="line"> * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</span><br><span class="line"> * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</span><br><span class="line"> * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</span><br><span class="line"> * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF</span><br><span class="line"> * THE POSSIBILITY OF SUCH DAMAGE.</span><br><span class="line"> */</span><br><span class="line">package org.openjdk.jmh.samples;</span><br><span class="line"></span><br><span class="line">import org.openjdk.jmh.annotations.*;</span><br><span class="line">import org.openjdk.jmh.runner.Runner;</span><br><span class="line">import org.openjdk.jmh.runner.RunnerException;</span><br><span class="line">import org.openjdk.jmh.runner.options.Options;</span><br><span class="line">import org.openjdk.jmh.runner.options.OptionsBuilder;</span><br><span class="line"></span><br><span class="line">import java.util.Arrays;</span><br><span class="line">import java.util.Random;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">@BenchmarkMode(Mode.AverageTime)</span><br><span class="line">@OutputTimeUnit(TimeUnit.NANOSECONDS)</span><br><span class="line">@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)</span><br><span class="line">@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)</span><br><span class="line">@Fork(5)</span><br><span class="line">public class JMHSample_38_PerInvokeSetup &#123;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * This example highlights the usual mistake in non-steady-state benchmarks.</span><br><span class="line">     *</span><br><span class="line">     * Suppose we want to test how long it takes to bubble sort an array. Naively,</span><br><span class="line">     * we could make the test that populates an array with random (unsorted) values,</span><br><span class="line">     * and calls sort on it over and over again:</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    private void bubbleSort(byte[] b) &#123;</span><br><span class="line">        boolean changed = true;</span><br><span class="line">        while (changed) &#123;</span><br><span class="line">            changed = false;</span><br><span class="line">            for (int c = 0; c &lt; b.length - 1; c++) &#123;</span><br><span class="line">                if (b[c] &gt; b[c + 1]) &#123;</span><br><span class="line">                    byte t = b[c];</span><br><span class="line">                    b[c] = b[c + 1];</span><br><span class="line">                    b[c + 1] = t;</span><br><span class="line">                    changed = true;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Could be an implicit State instead, but we are going to use it</span><br><span class="line">    // as the dependency in one of the tests below</span><br><span class="line">    @State(Scope.Benchmark)</span><br><span class="line">    public static class Data &#123;</span><br><span class="line"></span><br><span class="line">        @Param(&#123;&quot;1&quot;, &quot;16&quot;, &quot;256&quot;&#125;)</span><br><span class="line">        int count;</span><br><span class="line"></span><br><span class="line">        byte[] arr;</span><br><span class="line"></span><br><span class="line">        @Setup</span><br><span class="line">        public void setup() &#123;</span><br><span class="line">            arr = new byte[count];</span><br><span class="line">            Random random = new Random(1234);</span><br><span class="line">            random.nextBytes(arr);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Benchmark</span><br><span class="line">    public byte[] measureWrong(Data d) &#123;</span><br><span class="line">        bubbleSort(d.arr);</span><br><span class="line">        return d.arr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * The method above is subtly wrong: it sorts the random array on the first invocation</span><br><span class="line">     * only. Every subsequent call will &quot;sort&quot; the already sorted array. With bubble sort,</span><br><span class="line">     * that operation would be significantly faster!</span><br><span class="line">     *</span><br><span class="line">     * This is how we might *try* to measure it right by making a copy in Level.Invocation</span><br><span class="line">     * setup. However, this is susceptible to the problems described in Level.Invocation</span><br><span class="line">     * Javadocs, READ AND UNDERSTAND THOSE DOCS BEFORE USING THIS APPROACH.</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    @State(Scope.Thread)</span><br><span class="line">    public static class DataCopy &#123;</span><br><span class="line">        byte[] copy;</span><br><span class="line"></span><br><span class="line">        @Setup(Level.Invocation)</span><br><span class="line">        public void setup2(Data d) &#123;</span><br><span class="line">           copy = Arrays.copyOf(d.arr, d.arr.length);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Benchmark</span><br><span class="line">    public byte[] measureNeutral(DataCopy d) &#123;</span><br><span class="line">        bubbleSort(d.copy);</span><br><span class="line">        return d.copy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * In an overwhelming majority of cases, the only sensible thing to do is to suck up</span><br><span class="line">     * the per-invocation setup costs into a benchmark itself. This work well in practice,</span><br><span class="line">     * especially when the payload costs dominate the setup costs.</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    @Benchmark</span><br><span class="line">    public byte[] measureRight(Data d) &#123;</span><br><span class="line">        byte[] c = Arrays.copyOf(d.arr, d.arr.length);</span><br><span class="line">        bubbleSort(c);</span><br><span class="line">        return c;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">        Benchmark                                   (count)  Mode  Cnt      Score     Error  Units</span><br><span class="line"></span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureWrong          1  avgt   25      2.408 Â±   0.011  ns/op</span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureWrong         16  avgt   25      8.286 Â±   0.023  ns/op</span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureWrong        256  avgt   25     73.405 Â±   0.018  ns/op</span><br><span class="line"></span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureNeutral        1  avgt   25     15.835 Â±   0.470  ns/op</span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureNeutral       16  avgt   25    112.552 Â±   0.787  ns/op</span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureNeutral      256  avgt   25  58343.848 Â± 991.202  ns/op</span><br><span class="line"></span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureRight          1  avgt   25      6.075 Â±   0.018  ns/op</span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureRight         16  avgt   25    102.390 Â±   0.676  ns/op</span><br><span class="line">        JMHSample_38_PerInvokeSetup.measureRight        256  avgt   25  58812.411 Â± 997.951  ns/op</span><br><span class="line"></span><br><span class="line">        We can clearly see that &quot;measureWrong&quot; provides a very weird result: it &quot;sorts&quot; way too fast.</span><br><span class="line">        &quot;measureNeutral&quot; is neither good or bad: while it prepares the data for each invocation correctly,</span><br><span class="line">        the timing overheads are clearly visible. These overheads can be overwhelming, depending on</span><br><span class="line">        the thread count and/or OS flavor.</span><br><span class="line">     */</span><br><span class="line"></span><br><span class="line">    /*</span><br><span class="line">     * ============================== HOW TO RUN THIS TEST: ====================================</span><br><span class="line">     *</span><br><span class="line">     * You can run this test:</span><br><span class="line">     *</span><br><span class="line">     * a) Via the command line:</span><br><span class="line">     *    $ mvn clean install</span><br><span class="line">     *    $ java -jar target/benchmarks.jar JMHSample_38</span><br><span class="line">     *</span><br><span class="line">     * b) Via the Java API:</span><br><span class="line">     *    (see the JMH homepage for possible caveats when running from IDE:</span><br><span class="line">     *      http://openjdk.java.net/projects/code-tools/jmh/)</span><br><span class="line">     */</span><br><span class="line">    public static void main(String[] args) throws RunnerException &#123;</span><br><span class="line">        Options opt = new OptionsBuilder()</span><br><span class="line">                .include(&quot;.*&quot; + JMHSample_38_PerInvokeSetup.class.getSimpleName() + &quot;.*&quot;)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">        new Runner(opt).run();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上文示例中给出了对于冒泡排序的jmh示例，同时给出了基准测试方法的正确和错误的示范。先通过示例看官方提供注解的含义，后续再解析如何写正确的基准测试。</p>
+<h6 id="注解说明"><a href="#注解说明" class="headerlink" title="注解说明"></a>注解说明</h6><p><strong>测试控制注解</strong></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@Fork</td>
+<td>需要运行的试验数量，每个实验运行在独立的jvm进程中。可以指定额外的jvm参数</td>
+</tr>
+<tr>
+<td>@Measurement</td>
+<td>提供真正的测试阶段参数。指定迭代的次数，每次迭代的运行时间和每次迭代测试调用的数量(通常使用@BenchmarkMode(Mode.SingleShotTime)测试一组操作的开销——而不使用循环)</td>
+</tr>
+<tr>
+<td>@Warmup</td>
+<td>与@Measurement相同，但是用于预热阶段</td>
+</tr>
+<tr>
+<td>@Threads</td>
+<td>该测试使用的线程数。默认是Runtime.getRuntime().availableProcessors()</td>
+</tr>
+<tr>
+<td>@BenchmarkMode</td>
+<td>测试模式，可以理解为测试结果统计维度</td>
+</tr>
+<tr>
+<td>@OutputTimeUnit</td>
+<td>指定测试时间单位</td>
+</tr>
+</tbody>
+</table>
+<p>测试控制注解可以用于class和method级别，method优先级高于class优先级。</p>
+<p><strong>测试模式</strong></p>
+<p>测试方法上@BenchmarkMode注解表示使用特定的测试模式，测试模式此处指测试结果统计的维度。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mode.Throughput</td>
+<td>计算一个时间单位内操作数量</td>
+</tr>
+<tr>
+<td>Mode.AverageTime</td>
+<td>计算平均运行时间</td>
+</tr>
+<tr>
+<td>Mode.SampleTime</td>
+<td>计算一个方法的运行时间(包括百分位)</td>
+</tr>
+<tr>
+<td>Mode.SingleShotTime</td>
+<td>方法仅运行一次(用于冷测试模式)。或者特定批量大小的迭代多次运行（具体查看“<code>@Measurement</code>”注解）—这种情况下JMH将计算批处理运行时间(一次批处理所有调用的总时间)</td>
+</tr>
+<tr>
+<td>任意组合</td>
+<td>该测试使用的线程数。默认是Runtime.getRuntime().availableProcessors()</td>
+</tr>
+<tr>
+<td>Mode.All</td>
+<td>所有模式</td>
+</tr>
+</tbody>
+</table>
+<p><strong>时间单位</strong></p>
+<p>使用@OutputTimeUnit指定时间单位，它需要一个标准Java类型java.util.concurrent.TimeUnit作为参数。可是如果在一个测试中指定了多种测试模式，给定的时间单位将用于所有的测试(比如，测试SampleTime适宜使用纳秒，但是throughput使用更长的时间单位测量更合适)。</p>
+<p><strong>测试参数状态</strong></p>
+<p>测试方法可以接受参数，需要提供单个参数类，这个类必须遵循以下4条原则:</p>
+<ul>
+<li>有无参构造函数(默认构造函数)</li>
+<li>是公共类</li>
+<li>内部类应该是静态的</li>
+<li>该类必须使用@State注解<br>@State注解定义了给定类实例的可用范围。JMH可以在多线程同时运行的环境测试，因此需要选择正确的状态。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scope.Thread</td>
+<td>默认状态。实例将分配给运行给定测试的每个线程。</td>
+</tr>
+<tr>
+<td>Scope.Benchmark</td>
+<td>运行相同测试的所有线程将共享实例。可以用来测试状态对象的多线程性能</td>
+</tr>
+<tr>
+<td>Scope.Group</td>
+<td>实例分配给每个线程组</td>
+</tr>
+</tbody>
+</table>
+<p>除了单独的类标记@State，也可以将自己的benchmark类标记为@state标记。<br>@Param 注解用于标记 @State对象中基本数据类型参数，@Param注解使用String数组做为参数，这些字符串在任何@SetUp方法被调用前转换为字段类型。</p>
+<p>很多情况下，测试代码包含多个参数集合，要测试不同参数集合时，JMH不需要写多个测试方法，准确来说，测试参数是基本类型，基本包装类型或者String时，JMH提供了解决方法。<br>程序中需要完成：</p>
+<ol>
+<li>定义@State对象</li>
+<li>在其中定义所有的参数字段</li>
+<li>每个字段都使用@Param注解</li>
+</ol>
+<p>JMH使用所有@Param字段的输出结果，如果第一个字段有2个参数，第二个字段有5个参数，测试将运行2 <em> 5 </em> Forks次。</p>
+<p><strong>状态设置与清理</strong></p>
+<p>与JUnit测试类似，使用@Setup和@TearDown注解标记状态类的方法(这些方法在JMH文档中称为fixtures)。setup/teardown方法的数量是任意的。这些方法不会影响测试时间(但是Level.Invocation可能影响测量精度)。</p>
+<p>@Setup/@TearDown注解使用Level参数来指定何时调用fixture：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Level.Trial</td>
+<td>默认level。全部benchmark运行(一组迭代)之前/之后</td>
+</tr>
+<tr>
+<td>Level.Iteration</td>
+<td>一次迭代之前/之后(一组调用)</td>
+</tr>
+<tr>
+<td>Level.Invocation</td>
+<td>每个方法调用之前/之后(不推荐使用，除非你清楚这样做的目的)</td>
+</tr>
+</tbody>
+</table>
+<h6 id="示例说明"><a href="#示例说明" class="headerlink" title="示例说明"></a>示例说明</h6><p>如上示例中，class中声明了5个线程，每个线程迭代运行5次，每次运行一秒钟，取性能测试平均响应时间作为统计维度，在测试执行前预热五次，确保热点方法可以被加载到本地内存中，尽可能接近实际使用场景，输出结果的时间单位为纳秒。</p>
+<p>示例中给出了三种基准测试方法，measureWrong使用参数Data，Data参数的scope是整个基准测试阶段，即运行测试的所有线程都使用同一个Data实例，Data中count字段对应三组变量，在setUp时，会将string类型转化为int类型，同时生成对应参数指定长度的随机数组，setUp方法默认为在一组迭代中只初始化一次。在measureWrong方法中会对Data d 做冒泡排序，当第一次冒泡完成后，Data d已经有序的，后续再次执行冒泡排序不会进行位置互换操作，执行速度得到较大提高。这种方法来做基准测试并不能真正反映方法的执行效率。<br>measureNeutral方法使用参数DataCopy对象，DataCopy对象的范围是线程级别，即每个线程会使用一个DataCopy实例。而其setup级别代表方法在每次方法调用前会执行数组copy工作，即能保证每次调用时数组都与第一次执行的数组排序相同。但是官方文档中不并建议使用Invocation级别，除非很清楚如何使用，虽然setup调用时间不会被计算在方法调用时间中，但方法调用 会有一些开销，可能会影响到基准测试的精度。</p>
+<p>measureRight方法依然使用Data对象做为传入参数，只是在每次方法调用中使用传入参数的copy，这样保证方法调用不会影响到传入参数。<br>官方给出的建议是，在绝大多数情况下，特别是在setUp方法的开销远小于测试方法时，将setUp中的方法中的每次方法调用放在benchmark中是明智的。</p>
+<p>从最终测试结果上看，measureWrong方法的结果比较奇怪，排序速度太快。measureNeutral属于中规中矩的情况，虽然在每次方法调用前都能够保证数据正确性，但是开销是很大的，取决于线程数量和操作系统的情况。与上文分析相同。</p>
+<h5 id="使用注意事项"><a href="#使用注意事项" class="headerlink" title="使用注意事项"></a>使用注意事项</h5><p>对于JMH的使用，除上述内容外，还有以下建议：</p>
+<ol>
+<li><p>不要在测试中使用循环。JIT非常聪明，在循环中经常出现不可预料的处理。要测试真实的计算，让JMH处理剩余的部分。</p>
+<p> 在非统一开销操作情况下(比如测试处理列表的时间，这个列表在每个测试后有所增加)，你可能使用@BenchmarkMode(Mode.SingleShotTime) 和@Measurement(batchSize = N)。但是不允许你自己实现测试的循环</p>
+</li>
+<li><p>默认JMH为每个试验(迭代集合)fork一个新的java进程。这样可以防止前面收集的“资料”——其他被加载类以及它们执行的信息对当前测试的影响。比如，实现了相同接口的两个类，测试它们的性能，那么第一个实现(目标测试类)可能比第二个快，因为JIT发现第二个实现类后就把第一个实现的直接方法调用替换为接口方法调用。因此，不要把forks设为0，除非你清楚这样做的目的。极少数情况下需要指定JVM分支数量时，使用@Fork对方法注解，就可以设置分支数量，预热(warmup)迭代数量和JVM分支的其他参数。</p>
+<p> 可能通过JMH API调用来指定JVM分支参数也有优势——可以使用一些JVM -XX:参数，通过JMH API访问不到它。这样就可以根据你的代码自动选择最佳的JVM设置(new Runner(opt).run()以简便的形式返回了所有的测试结果)。</p>
+</li>
+<li><p>测试前需要预热，尽量贴近实际使用场景。</p>
+</li>
+</ol>
+<h5 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h5><ul>
+<li><p>IntelliJ 有 <a href="https://github.com/artyushov/idea-jmh-plugin" target="_blank" rel="noopener">JMH 的插件</a>，让jmh的使用和junit一样方便。具体使用方法参看github上相关文档。</p>
+</li>
+<li><p>在本篇资料收集过程中，发现了国外一些不错的站点，对于java知识学习和性能方面知识积累会有一些帮助，如下：</p>
+<p><a href="https://jaxenter.com/" target="_blank" rel="noopener">jaxenter</a> java相关资讯和技术</p>
+<p><a href="http://java-performance.info" target="_blank" rel="noopener">java performance</a> 关注java性能</p>
+<p><a href="http://tutorials.jenkov.com/" target="_blank" rel="noopener">jenkov的教程</a>   java教程</p>
+</li>
+</ul>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>本篇对JMH基准测试工具做了简单介绍，主要关注使用JMH工具的项目搭建、运行和工具关键注解的使用。未尽事项，请参考<a href="http://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/" target="_blank" rel="noopener">官方示例</a>。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div> 
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://jdjrhzqa.github.io/2018/07/11/maven使用问题积累/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -997,7 +1363,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -1019,7 +1385,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
