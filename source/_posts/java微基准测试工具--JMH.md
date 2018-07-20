@@ -1,5 +1,5 @@
 ---
-title: java微基准性能测试工具 -- JMH
+title: java微基准工具 -- JMH
 categories: 工具学习
 author: 郑琳
 tags: [microbenchmark,performance,java]
