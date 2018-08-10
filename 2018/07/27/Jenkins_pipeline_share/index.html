@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="CI,Jenkins," />
 
 
 
@@ -79,16 +79,27 @@
 
 
 
-<meta name="description" content="打造业内高精尖白盒测试团队！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="京东金融杭州QA">
-<meta property="og:url" content="https://jdjrhzqa.github.io/tags/java/index.html">
+<meta name="description" content="前言本文为实践Jenkins Pipeline后的分享，介绍一些本人感受到的pipeline优势、创建pipeline项目的步骤以及调试运行的方法，适合建立过Jenkins项目但是没有接触过其pipeline功能的人群参考. Jenkins Pipeline介绍Jenkins Pipeline是一系列支持执行且集成持续发布pipeline到Jenkins的插件组成的子系统.持续发布pipeline">
+<meta name="keywords" content="CI,Jenkins">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins Pipeline实践分享">
+<meta property="og:url" content="https://jdjrhzqa.github.io/2018/07/27/Jenkins_pipeline_share/index.html">
 <meta property="og:site_name" content="京东金融杭州QA">
-<meta property="og:description" content="打造业内高精尖白盒测试团队！">
+<meta property="og:description" content="前言本文为实践Jenkins Pipeline后的分享，介绍一些本人感受到的pipeline优势、创建pipeline项目的步骤以及调试运行的方法，适合建立过Jenkins项目但是没有接触过其pipeline功能的人群参考. Jenkins Pipeline介绍Jenkins Pipeline是一系列支持执行且集成持续发布pipeline到Jenkins的插件组成的子系统.持续发布pipeline">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/freeStyleProjectConf.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/freeStyleProjectBuild.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/pipelineProjectConf.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/pipelineProjectModule.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/pipelineStages.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/pipelineLogs.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/pipelineReplay.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/blueOceanView.png">
+<meta property="og:updated_time" content="2018-08-10T08:32:05.048Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="京东金融杭州QA">
-<meta name="twitter:description" content="打造业内高精尖白盒测试团队！">
+<meta name="twitter:title" content="Jenkins Pipeline实践分享">
+<meta name="twitter:description" content="前言本文为实践Jenkins Pipeline后的分享，介绍一些本人感受到的pipeline优势、创建pipeline项目的步骤以及调试运行的方法，适合建立过Jenkins项目但是没有接触过其pipeline功能的人群参考. Jenkins Pipeline介绍Jenkins Pipeline是一系列支持执行且集成持续发布pipeline到Jenkins的插件组成的子系统.持续发布pipeline">
+<meta name="twitter:image" content="https://jdjrhzqa.github.io/images/Jenkins_Pipeline/freeStyleProjectConf.png">
 
 
 
@@ -118,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="https://jdjrhzqa.github.io/tags/java/"/>
+  <link rel="canonical" href="https://jdjrhzqa.github.io/2018/07/27/Jenkins_pipeline_share/"/>
 
 
 
 
 
-  <title>Tag: java | 京东金融杭州QA</title>
+  <title>Jenkins Pipeline实践分享 | 京东金融杭州QA</title>
   
 
 
@@ -143,7 +154,7 @@
     
   
 
-  <div class="container sidebar-position-left ">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,54 +282,379 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block tag">
+  <div id="posts" class="posts-expand">
+    
 
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>java<small>Tag</small>
-        </h1>
-      </div>
+  
 
-      
-        
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://jdjrhzqa.github.io/2018/07/27/Jenkins_pipeline_share/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="白盒测试组">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar2.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="京东金融杭州QA">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2018/07/20/java微基准测试工具--JMH/" itemprop="url">
-              
-                <span itemprop="name">java微基准工具 -- JMH</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">Jenkins Pipeline实践分享</h1>
+        
+		
+        <div class="post-meta">
+		
+			 
+              <div class="post-author">			  
+                  Mota
+              </div>
+          
+		  
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-27T00:00:00+08:00">
+                2018-07-27
+              </time>
+            
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-07-20T00:00:00+08:00"
-              content="2018-07-20" >
-          07-20
-        </time>
-      </div>
+            
 
-    </header>
-  </article>
+            
+          </span>	
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/工具学习/" itemprop="url" rel="index">
+                    <span itemprop="name">工具学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+		  
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/07/27/Jenkins_pipeline_share/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/07/27/Jenkins_pipeline_share/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/07/27/Jenkins_pipeline_share/" class="leancloud_visitors" data-flag-title="Jenkins Pipeline实践分享">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">Visitors&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          		    
+
+          	  
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>本文为实践Jenkins Pipeline后的分享，介绍一些本人感受到的pipeline优势、创建pipeline项目的步骤以及调试运行的方法，适合建立过Jenkins项目但是没有接触过其pipeline功能的人群参考.</p>
+<h4 id="Jenkins-Pipeline介绍"><a href="#Jenkins-Pipeline介绍" class="headerlink" title="Jenkins Pipeline介绍"></a>Jenkins Pipeline介绍</h4><p>Jenkins Pipeline是一系列支持执行且集成<code>持续发布pipeline</code>到Jenkins的插件组成的子系统.<br><code>持续发布pipeline</code>指从版本控制系统中获得软件到交付给用户中间自动化的流程.每次软件更新在发布前都要经过编译打包以及多个测试和开发的场景.<br>Jenkins Pipeline提供一组可扩展的工具通过<a href="https://jenkins.io/doc/book/pipeline/syntax" target="_blank" rel="noopener">Pipeline专用语言DSL</a>对简单到复杂的发布Pipeline流程建模实现.<br>Jenkins Pipeline定义成文本文件<code>Jenkinsfile</code>，提交到源码仓库中进行版本维护及审查.<br>使用pipeline，用户可以获得以下优势：</p>
+<ul>
+<li>代码：Pipeline以代码的形式实现，通常被检入源代码控制，使团队能够编辑，审查和迭代其传送流程。</li>
+<li>持久化：Pipeline可以在计划和计划外重新启动Jenkins管理时同时存在。</li>
+<li>可暂停(交互)：Pipeline可以选择停止并等待人工输入或批准，然后再继续Pipeline运行。</li>
+<li>多功能：Pipeline支持复杂的现实世界连续交付要求，包括并行分叉/连接，循环和执行工作的能力。</li>
+<li>可扩展：Pipeline插件支持其DSL的自定义扩展以及与其他插件集成的多个选项。</li>
+</ul>
+<h4 id="Jenkins自由风格项目"><a href="#Jenkins自由风格项目" class="headerlink" title="Jenkins自由风格项目"></a>Jenkins自由风格项目</h4><p>先简要介绍下之前未使用pipeline时建立的Jenkins项目以做对比.<br><em>新建任务-&gt;构建一个自由风格的软件项目</em> 进入项目配置如图</p>
+<p><img src="/images/Jenkins_Pipeline/freeStyleProjectConf.png" alt="自由风格项目配置"></p>
+<p>在项目配置里主要有<code>构建</code>和<code>构建后操作</code>模块需要编辑，在本项目中，将参数处理/编译/代码检查/单元测试/集成测试/覆盖率生成的执行均写入shell脚本，通过<code>构建</code>中添加<code>Execute shell</code>步骤执行. 另外在<code>build.sh</code>后面的执行参数是在<code>General</code>模块中<code>参数化构建过程</code>中配置.<br><code>构建后操作</code>模块中需添加<code>Publish Cppcheck results</code>步骤处理<code>cppcheckreport.xml</code>生成静态代码检查报告，添加<code>Publish Junit test result report</code>步骤处理<code>testreport.xml</code>生成用例运行测试报告，添加<code>Publish HTML reports</code>步骤处理<code>lcov-html</code>目录生成覆盖率报告等.这些文件及目录均为执行shell后生成. </p>
+<p><img src="/images/Jenkins_Pipeline/freeStyleProjectBuild.png" alt="自由风格项目构建"></p>
+<p>除了这两个模块外，还需要在<code>源码管理</code>模块中填写版本控制软件类型/仓库地址/用户证书/分支号等.</p>
+<h4 id="Jenkins-Pipeline项目"><a href="#Jenkins-Pipeline项目" class="headerlink" title="Jenkins Pipeline项目"></a>Jenkins Pipeline项目</h4><p><em>新建任务-&gt;流水线</em>，进入项目配置如图</p>
+<p><img src="/images/Jenkins_Pipeline/pipelineProjectConf.png" alt="Pipeline项目配置"></p>
+<p>主要模块<code>流水线</code>如图</p>
+<p><img src="/images/Jenkins_Pipeline/pipelineProjectModule.png" alt="Pipeline项目模块"></p>
+<p>定义中选择<code>Pipeline script from SCM</code>，表示Pipeline脚本使用SCM仓库中的Jenkinsfile，如果选择选项<code>Pipeline script</code>则会出现<code>脚本</code>的文本编辑框，直接在页面上进行编辑运行.</p>
+<p><strong>该项目中编写的Jenkinsfile (Declarative Pipeline)</strong></p>
+<pre><code>pipeline {
+  agent any//指定在哪台机器上执行任务，配置Node时指定的标签名，any表示任一节点，如果出现在stage内则指定该stage任务在哪台机器执行
+  stages {
+    stage(&apos;Checkout&apos;) { //定义一个下拉代码的任务
+      steps {//执行该任务的各个步骤
+        checkout([$class: &apos;GitSCM&apos;, branches: [[name: &apos;$Branch&apos;]], doGenerateSubmoduleConfigurations: false, 
+        extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: &apos;$git_root&apos;]]]) 
+      }
+    }
+
+    stage(&apos;Pre process&apos;) {
+      steps {
+        dir(path: &apos;jenkins/build&apos;) {//切换到某目录下执行，执行完steps会回退到原来所在目录
+...        }
+        script {
+...          REPORT=&quot;jenkins/report&quot;  //定义工具和报告的路径变量
+        }
+    }
+
+    stage(&apos;Quality Analysis&apos;) {
+      parallel {// 并行运行任务
+        stage(&apos;Static Analysis&apos;) {
+...  }
+        stage(&apos;Unit Testing&apos;) {
+          when {//条件判断是否执行该stage，return为真时执行
+            expression {
+              return params.type == &apos;unit&apos; || params.type == &apos;all&apos;
+            }
+          }
+          steps {
+              sh &quot;./build/${params.Target} --gtest_filter=${params.uargs} --gtest_output=
+              xml:../../../../${UNIT_REPORT}/testreport.xml&quot; //运行gtest生成测试报告
+        }
+      }
+    }
+
+    stage(&apos;Code Building&apos;) {
+...    }
+
+    stage(&apos;Integration Testing&apos;) {
+...     }
+
+    stage(&apos;Coverage HTML Report&apos;) {
+     ...
+      parallel {
+        stage(&apos;Integration Part&apos;) {
+          ...             }
+
+        stage (&apos;Unit Part&apos;) {
+          ...        }
+      }
+    }
+
+    stage(&apos;Coverage Report&apos;) {
+      ...      }
+
+    stage(&apos;Deploy&apos;) {
+      steps {
+        input &quot;Can be deploy into product environment?&quot;//等待手动输入确认
+        echo &apos;TO DO Deploy&apos;
+      }
+    }
+  }
+
+  post {//后处理模块,根据pipeline任务执行结果进入不同分支处理,可将该模块定义在stage内单独处理其结果
+    aborted {//任务中断，Web界面上该任务为灰色的点
+      echo &apos;Pipeline WAS ABORTED&apos;
+    }
+
+    always {//始终运行分支
+      echo &apos;Pipeline finished&apos;
+...    }
+
+    changed {//任务状态与上一次不一样
+      echo &apos;Stage HAVE CHANGED&apos;
+    }
+
+    failure {//任务失败，Web界面上该任务为红色的点
+      echo &apos;Stage FAILED&apos;
+    }
+
+    success {//任务成功，Web界面上该任务为蓝色的点
+      echo &apos;Stage was Successful&apos;
+    }
+  }
+
+  options {
+    buildDiscarder(logRotator(numToKeepStr: &apos;10&apos;))//可选项，表示保留最多10个构建日志.
+  }
+  parameters {//可配置任务参数，运行时可在Web界面上配置不同参数
+    string(name: &apos;git_root&apos;, defaultValue: &apos;http://gitlab.cbpmgt.com/test.git&apos;, description: &apos;git代码路径&apos;)
+  ...    string(name: &apos;Tool_Path&apos;, defaultValue: &apos;/home/jenkins/toolkit&apos;, description: &apos;Toolkit路径&apos;)
+  }
+}
+</code></pre><h4 id="项目对比"><a href="#项目对比" class="headerlink" title="项目对比"></a>项目对比</h4><ol>
+<li>Pipeline模式把自由风格模式项目中除了<code>构建触发器</code>外的所有模块都编码到Jenkinsfile文件中，发布配置和代码绑定在一起在SCM进行审查维护，大大增加其可移植性.</li>
+<li>Pipeline项目执行后可在项目首页形象地看到每个stage执行状态及运行时间.<br><img src="/images/Jenkins_Pipeline/pipelineStages.png" alt="Pipeline项目Stages"></li>
+<li>Pipeline日志系统简洁，当某次任务失败，需要找到其失败位置，在自由风格项目中需要点击到该任务的<code>控制台输出</code>，在任务执行的所有日志中查找.而Pipeline项目可直接在项目首页点击任务失败的stage看到原因.<br><img src="/images/Jenkins_Pipeline/pipelineLogs.png" alt="Pipeline项目日志"></li>
+<li>Pipeline通过<code>input</code>命令可实现人工介入该过程，更加可靠地判断是否需进行如发布到生产环境的后续步骤.</li>
+<li>Pipeline通过<code>parallel</code>命令可便捷实现并行任务，加快交付验证的速度.</li>
+</ol>
+<h4 id="Pipeline开发工具"><a href="#Pipeline开发工具" class="headerlink" title="Pipeline开发工具"></a>Pipeline开发工具</h4><h5 id="命令行Pipeline-Linter"><a href="#命令行Pipeline-Linter" class="headerlink" title="命令行Pipeline Linter"></a>命令行Pipeline Linter</h5><p>Jenkins可以在实际运行之前从命令行<a href="https://www.w3cschool.cn/jenkins/jenkins-zh3e28mj.html" target="_blank" rel="noopener">Jenkins CLI</a>验证<a href="https://www.w3cschool.cn/jenkins/jenkins-jg9528pb.html" target="_blank" rel="noopener">声明式Pipeline</a>，本项目用SSH接口运行linter.<br>默认Jenkins的ssh接口是禁用的，需要在Jenkins管理页面上开启: 以管理员身份进入全局安全配置，在<code>SSH Server</code>下选择<code>随机选取</code>即可开启.<br>验证ssh接口是否开启，在需要验证Jenkinsfile的机器A上执行命令获得ssh接口的ip和端口</p>
+<pre><code>$ curl -Lv http://$JENKINSURL/login 2&gt;&amp;1 | grep &apos;SSH&apos;
+&lt; X-SSH-Endpoint: 10.9.0.149:36340
+</code></pre><p>则ssh端口为36340.<br>下一步需配置认证: 将机器A上公钥内容拷贝到<code>https://$JENKINSURL/user/$USERNAME/configure</code>页面上的<code>SSH Public Keys</code>框体中，点击<code>Apply</code>按钮完成.<br>验证密钥认证是否配置成功:</p>
+<pre><code>$ ssh -v -l $USERNAME -p 36340 10.9.0.149
+...Authentication succeeded (publickey)..
+</code></pre><p>即认证成功. 执行以下命令验证Jenkinsfile语法是否正确</p>
+<pre><code>$ ssh -l $USERNAME -p 36340  10.9.0.149 declarative-linter &lt; Jenkinsfile
+Jenkinsfile successfully validated.
+</code></pre><h5 id="Replay调试运行"><a href="#Replay调试运行" class="headerlink" title="Replay调试运行"></a>Replay调试运行</h5><p>当提交的Jenkinsfile执行后出错或者有其他需要更新时，可以直接使用其<code>Replay</code>功能基于上一次直接在页面上修改.<br>点击上次运行的任务，左侧点击<code>Replay</code>，显示如下.</p>
+<p><img src="/images/Jenkins_Pipeline/pipelineReplay.png" alt="Pipeline项目Replay"></p>
+<p>该功能方便快速更新当前的Pipeline过程，在未最终完成修改时无需对Jenkinsfile进行新的修改提交，最终完成后复制<code>Main Script</code>窗体内容到Jenkinsfile正常提交即可.</p>
+<h5 id="Blue-Ocean插件"><a href="#Blue-Ocean插件" class="headerlink" title="Blue Ocean插件"></a>Blue Ocean插件</h5><p>在Pipeline实践中了解到其相关的插件<code>Blue Ocean</code>，该插件使Pipeline实现及运行的流程更加的可视化.<br><em>系统管理-&gt;管理插件-&gt;可选插件</em> 中选择<code>Blue Ocean</code>进行安装<br>安装后在自己工程中打开<code>Open Blue Ocean</code>并进入Blue Ocean界面，某次执行任务后视图</p>
+<p><img src="/images/Jenkins_Pipeline/blueOceanView.png" alt="Blue Ocean视图"></p>
+<p>视图中显示的之前编写Jenkinsfile文件运行的Pipeline项目各个步骤的运行路径.<br>Blue Ocean界面下可直接创建Pipeline项目.详见<a href="https://www.w3cschool.cn/jenkins/jenkins-nqkh28q1.html" target="_blank" rel="noopener">BlueOcean 创建Pipeline</a></p>
+<h5 id="Pipeline-Syntax"><a href="#Pipeline-Syntax" class="headerlink" title="Pipeline Syntax"></a>Pipeline Syntax</h5><p>除了上面的工具外，pipeline项目视图的左侧还有个<code>Pipeline Syntax</code>模块，里面可以在页面上填写便捷地生成很多步骤的脚本.</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>本文对比了<code>自由风格项目</code>与<code>Pipeline项目</code>的区别，重点突出了后者可视化及代码配置可维护的特点，展示pipeline项目的执行效果，最后简要介绍实践中用到的几个开发工具Blue Ocean及Replay等.</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a href="https://jenkins.io/doc/book/pipeline/" target="_blank" rel="noopener">Jenkins Pipeline官网介绍</a><br><a href="https://www.w3cschool.cn/jenkins/jenkins-epas28oi.html" target="_blank" rel="noopener">W3C school Pipeline 介绍</a><br><a href="https://www.w3cschool.cn/jenkins/jenkins-627f28pt.html" target="_blank" rel="noopener">BlueOcean介绍</a></p>
 
       
     </div>
+    
+    
+    
 
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CI/" rel="tag"># CI</a>
+          
+            <a href="/tags/Jenkins/" rel="tag"># Jenkins</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/20/java微基准测试工具--JMH/" rel="next" title="java微基准工具 -- JMH">
+                <i class="fa fa-chevron-left"></i> java微基准工具 -- JMH
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/02/性能测试浅说/" rel="prev" title="性能测试浅说">
+                性能测试浅说 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div> 
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
   </div>
-  
-  
-  
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
 
-  
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -326,6 +662,13 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -346,8 +689,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -411,6 +763,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Jenkins-Pipeline介绍"><span class="nav-number">2.</span> <span class="nav-text">Jenkins Pipeline介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Jenkins自由风格项目"><span class="nav-number">3.</span> <span class="nav-text">Jenkins自由风格项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Jenkins-Pipeline项目"><span class="nav-number">4.</span> <span class="nav-text">Jenkins Pipeline项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#项目对比"><span class="nav-number">5.</span> <span class="nav-text">项目对比</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pipeline开发工具"><span class="nav-number">6.</span> <span class="nav-text">Pipeline开发工具</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#命令行Pipeline-Linter"><span class="nav-number">6.1.</span> <span class="nav-text">命令行Pipeline Linter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Replay调试运行"><span class="nav-number">6.2.</span> <span class="nav-text">Replay调试运行</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Blue-Ocean插件"><span class="nav-number">6.3.</span> <span class="nav-text">Blue Ocean插件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pipeline-Syntax"><span class="nav-number">6.4.</span> <span class="nav-text">Pipeline Syntax</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -566,6 +934,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
