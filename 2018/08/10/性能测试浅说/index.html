@@ -83,14 +83,18 @@
 <meta name="keywords" content="性能,理论,基础">
 <meta property="og:type" content="article">
 <meta property="og:title" content="性能测试浅说">
-<meta property="og:url" content="https://jdjrhzqa.github.io/2018/08/02/性能测试浅说/index.html">
+<meta property="og:url" content="https://jdjrhzqa.github.io/2018/08/10/性能测试浅说/index.html">
 <meta property="og:site_name" content="京东金融杭州QA">
 <meta property="og:description" content="导语 软件行业飞速发展，时下大数据规模宏盛，人工智能兴起，好不热闹。SDLC 从瀑布到敏捷再到精益化的 devops，持续集成广泛使用。作为测试从业者，迎潮而上，势必要更广泛的渗透到项目始终，传统的黑盒、白盒、性能、自动化、安全方向分类变得模糊，优秀的测试人员无时不刻在项目各阶段不遗余力地集成质量工作，并保持井井有条，不失优雅。本文将讨论性能测试相关内容。  性能测试是什么？在软件工程中，性能测试">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-10T08:32:05.074Z">
+<meta property="og:image" content="https://jdjrhzqa.github.io/2018/08/10/性能测试浅说/performancetesting.jpg">
+<meta property="og:image" content="https://jdjrhzqa.github.io/2018/08/10/性能测试浅说/Distribution2.png">
+<meta property="og:image" content="https://jdjrhzqa.github.io/2018/08/10/性能测试浅说/linux_observability_tools.png">
+<meta property="og:updated_time" content="2018-08-10T10:19:39.159Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="性能测试浅说">
 <meta name="twitter:description" content="导语 软件行业飞速发展，时下大数据规模宏盛，人工智能兴起，好不热闹。SDLC 从瀑布到敏捷再到精益化的 devops，持续集成广泛使用。作为测试从业者，迎潮而上，势必要更广泛的渗透到项目始终，传统的黑盒、白盒、性能、自动化、安全方向分类变得模糊，优秀的测试人员无时不刻在项目各阶段不遗余力地集成质量工作，并保持井井有条，不失优雅。本文将讨论性能测试相关内容。  性能测试是什么？在软件工程中，性能测试">
+<meta name="twitter:image" content="https://jdjrhzqa.github.io/2018/08/10/性能测试浅说/performancetesting.jpg">
 
 
 
@@ -120,7 +124,7 @@
 
 
 
-  <link rel="canonical" href="https://jdjrhzqa.github.io/2018/08/02/性能测试浅说/"/>
+  <link rel="canonical" href="https://jdjrhzqa.github.io/2018/08/10/性能测试浅说/"/>
 
 
 
@@ -287,7 +291,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://jdjrhzqa.github.io/2018/08/02/性能测试浅说/">
+    <link itemprop="mainEntityOfPage" href="https://jdjrhzqa.github.io/2018/08/10/性能测试浅说/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="白盒测试组">
@@ -323,8 +327,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-02T18:02:35+08:00">
-                2018-08-02
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-10T18:02:35+08:00">
+                2018-08-10
               </time>
             
 
@@ -364,8 +368,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/08/02/性能测试浅说/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/02/性能测试浅说/" itemprop="commentCount"></span>
+                <a href="/2018/08/10/性能测试浅说/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/10/性能测试浅说/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -373,7 +377,7 @@
 
           
           
-             <span id="/2018/08/02/性能测试浅说/" class="leancloud_visitors" data-flag-title="性能测试浅说">
+             <span id="/2018/08/10/性能测试浅说/" class="leancloud_visitors" data-flag-title="性能测试浅说">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -404,28 +408,28 @@
       
 
       
-        <h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><blockquote>
+        <h3 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h3><blockquote>
 <p>软件行业飞速发展，时下大数据规模宏盛，人工智能兴起，好不热闹。SDLC 从瀑布到敏捷再到精益化的 devops，持续集成广泛使用。作为测试从业者，迎潮而上，势必要更广泛的渗透到项目始终，传统的黑盒、白盒、性能、自动化、安全方向分类变得模糊，优秀的测试人员无时不刻在项目各阶段不遗余力地集成质量工作，并保持井井有条，不失优雅。本文将讨论性能测试相关内容。</p>
 </blockquote>
-<h3 id="性能测试是什么？"><a href="#性能测试是什么？" class="headerlink" title="性能测试是什么？"></a>性能测试是什么？</h3><p>在软件工程中，<strong>性能测试</strong>通常是一种测试实践，用于确定系统在特定工作负载下的响应性和稳定性方面的表现。它还可用于调查，测量或验证系统的其他质量属性，例如可伸缩性可靠性和资源使用。 </p>
+<h3 id="性能测试是什么？"><a href="#性能测试是什么？" class="headerlink" title="性能测试是什么？"></a>性能测试是什么？</h3><p>在软件工程中，<strong>性能测试</strong>是一种测试实践，用于确定系统在特定工作负载下的响应性和稳定性方面的表现。它还可用于调查，测量或验证系统的其他质量属性，例如可伸缩性可靠性和资源使用。 </p>
 <h3 id="什么时候做性能测试？"><a href="#什么时候做性能测试？" class="headerlink" title="什么时候做性能测试？"></a>什么时候做性能测试？</h3><p>软件性能<a href="https://baike.baidu.com/item/%E8%BD%AF%E4%BB%B6%E6%80%A7%E8%83%BD/5341633" title="百度百科-软件性能" target="_blank" rel="noopener">^1</a>是软件的一种非功能特性，它关注的不是软件是否能够完成特定的功能，而是在完成该功能时展示出来的及时性。</p>
 <p>所以说，普遍意义上的性能测试发生在功能测试完成（功能能够正确执行）之后。</p>
-<p>但是通常在一个复杂系统几轮测试至功能稳定，性能测试一跑，发现和线上期望值差别很大，这时候和开发一起调优，如果只是简单的配置优化和局部代码改改就解决了问题固然开心，但是万一发现是架构缺陷，这时候调整无异于牵一发而动全身。</p>
-<p>我们要做的更好，那么应该在项目早期就纳入性能集成：</p>
+<p>一个复杂系统几轮测试至功能稳定，性能测试一跑，发现和线上期望值差别很大，这时候和开发一起调优，如果只是简单的配置优化和局部代码改改就解决了问题固然开心，但万一发现是架构缺陷，这时候调整无异于牵一发而动全身。</p>
+<p>我们要做的更好,就应该在项目早期纳入性能集成：</p>
 <ol>
 <li>需求阶段，评审出性能需求(性能规格)，比如C端服务场景，至少应该有个用户量和数据量的概念；</li>
 <li>设计阶段，对引入的技术栈有基本的性能考量：关注扩展性，关注数据库设计，对引入的外部开源组件查阅或产出 benchmark 报告；</li>
-<li>编码阶段，为开发指定一个良好易用的支持并发的单元测试框架（如testng），开发在一些可能发生性能问题的逻辑段or算法中，编写压力单元测试 集成。更好的方式是组织代码审查 codereview（不必要、低效的锁、不必要的安全线程设计、糟糕的数据结构、冗余的网络访问…），坚持每天静态代码扫描构建（如sonar），其定义的常见性能缺陷规则在发现疏忽导致的一些低级的性能缺陷很有帮助。</li>
+<li>编码阶段，为开发指定一个良好易用的支持并发的单元测试框架（如testng），开发在一些可能发生性能问题的逻辑段or算法中，编写压力单元测试集成。更好的方式是组织代码审查 codereview（不必要、低效的锁、不必要的安全线程设计、糟糕的数据结构、冗余的网络访问…），坚持每天静态代码扫描构建（如sonar），其定义的常见性能缺陷规则在发现疏忽导致的一些低级的性能缺陷很有帮助。</li>
 </ol>
 <p>这样一来，再进入普遍意义的性能测试阶段过程，性能不可控风险已经最低，可以把更多精力放在参数调优和容量规划上了。</p>
 <h3 id="性能测试目标"><a href="#性能测试目标" class="headerlink" title="性能测试目标?"></a>性能测试目标?</h3><ol>
 <li>验证软件在特点场景下的性能表现，并枚举一些量化的指标；如当下互联网在线服务领域广泛定义的SLA（服务等级协议），并给出相应的SLI(Service Level Indicator 关键量化指标)；</li>
-<li>当1未满足期望的一部分情况下的调优并使满足(当然相应的量化指标并不总是存在，当然没有人来表达给定用户群的最大可接受响应时间等等的时候，性能测试经常用作性能配置文件调优过程);</li>
+<li>当1未满足期望的情况下进行调优并使满足(当然相应的量化指标并不总是存在，当然没有人来表达给定用户群的最大可接受响应时间等等的时候，性能测试经常用作性能配置文件调优过程);</li>
 <li>在1,2基础上，验证软件or硬件扩展情况下的性能增长表现，并给出合适的容量规划满足生产的服务需求，最终部署到生产环境中，并展开良好的监控经验以持续规划。</li>
 </ol>
 <h3 id="性能测试工作？"><a href="#性能测试工作？" class="headerlink" title="性能测试工作？"></a>性能测试工作？</h3><ol>
 <li><p>确定测试目标</p>
-<p>制定性能测试工程的截止目标，如上所说，这往往是多样性的。常见如量化业务的吞吐量指标可以使用28原则（指80%的业务量在20%的时间里完成）。</p>
+<p>制定性能测试工程的截止目标，如上所说，这往往是多样性的。例如:量化业务的吞吐量指标（可以使用28原则,指80%的业务量在20%的时间里完成）。</p>
 </li>
 <li><p>设计测试场景</p>
 <ul>
@@ -438,8 +442,8 @@
 <p>根据设计的测试场景访问形式配合适当的负载工具完成测试脚本的编写/录制。常见如测试web网站可以通过jmeter http 代理服务录制网站业务操作并回放；</p>
 </li>
 <li><p>分类执行性能测试</p>
-<p>下图为性能测试经典负载模型，我们可以分阶段为性能测试分类：</p>
-
+<p>下图为性能测试经典负载模型，我们可以按阶段为性能测试分类：</p>
+<img src="/2018/08/10/性能测试浅说/performancetesting.jpg" title="性能测试负载模型">
 <ul>
 <li><p>负载测试<br>负载测试(0-b)是最简单的性能测试形式。通常通过不断对系统添加压力进行负载测试以了解系统在特定预期负载下的行为,直到系统出现某些资源耗尽，例如CPU或者网络带宽。 </p>
 </li>
@@ -461,7 +465,7 @@
 </ul>
 </li>
 </ol>
-<ol start="4">
+<ol start="5">
 <li><p>获取性能数据</p>
 <p>确保部署和配置性能监视软件来收集所有的关键指标，并可以跟踪一段时间内的趋势，生成监控报告。这一部分同时适用于验证系统已有的监控功能和帮助监控系统的规划。在互联网在线服务，基于服务等级的监控子系统建设往往是必须的。</p>
 </li>
@@ -484,7 +488,7 @@
 <li><p>响应时间(response time)</p>
 <p>指的是一个系统节点响应另一个系统节点的请求所花费的时间 ，如从浏览器客户端到Web服务器的HTTP GET请求。</p>
 <p>通常表现形式可以是平均值average，中位值median，百分比分布percentile,不过平均值 or 中位线都只能是一维世界，百分比分布可以更好的图像化（更形象的，更细粒度的）反馈目前系统的响应时间状况。 </p>
-
+<img src="/2018/08/10/性能测试浅说/Distribution2.png" title="事务响应时间分布图">
 </li>
 <li><p>响应成功率</p>
 <p>测试事务断言成功率、超时错误率</p>
@@ -523,7 +527,7 @@
 <p>java：<a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/jvisualvm.html" target="_blank" rel="noopener">jvisualvm</a> 、<a href="http://www.quest.com/jprobe/" target="_blank" rel="noopener">JProfiler</a>、<a href="https://www.eclipse.org/mat/" target="_blank" rel="noopener">Eclipse Memory Analyze(MAT)</a></p>
 <p>C\C++:   <a href="http://valgrind.org/" target="_blank" rel="noopener">Valgrind</a>、  <a href="http://cs.ecs.baylor.edu/~donahoo/tools/ccmalloc/" target="_blank" rel="noopener">ccmalloc</a></p>
 <p>linux：直接引用系统性能大神Brendan Gregg 的总结和实践<a href="https://github.com/brendangregg/perf-tools" target="_blank" rel="noopener">perf-tools</a></p>
-
+<img src="/2018/08/10/性能测试浅说/linux_observability_tools.png" title="linux_observability_tools">
 </li>
 </ul>
 <p>待续…</p>
@@ -746,7 +750,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#导语"><span class="nav-number">1.</span> <span class="nav-text">导语</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试是什么？"><span class="nav-number">1.1.</span> <span class="nav-text">性能测试是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么时候做性能测试？"><span class="nav-number">1.2.</span> <span class="nav-text">什么时候做性能测试？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试目标"><span class="nav-number">1.3.</span> <span class="nav-text">性能测试目标?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试工作？"><span class="nav-number">1.4.</span> <span class="nav-text">性能测试工作？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的性能关注指标有哪些？"><span class="nav-number">1.5.</span> <span class="nav-text">常见的性能关注指标有哪些？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试有哪些好的工具？"><span class="nav-number">1.6.</span> <span class="nav-text">性能测试有哪些好的工具？</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#导语"><span class="nav-number">1.</span> <span class="nav-text">导语</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试是什么？"><span class="nav-number">2.</span> <span class="nav-text">性能测试是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么时候做性能测试？"><span class="nav-number">3.</span> <span class="nav-text">什么时候做性能测试？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试目标"><span class="nav-number">4.</span> <span class="nav-text">性能测试目标?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试工作？"><span class="nav-number">5.</span> <span class="nav-text">性能测试工作？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的性能关注指标有哪些？"><span class="nav-number">6.</span> <span class="nav-text">常见的性能关注指标有哪些？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能测试有哪些好的工具？"><span class="nav-number">7.</span> <span class="nav-text">性能测试有哪些好的工具？</span></a></li></ol></div>
             
 
           </div>
@@ -965,7 +969,7 @@
         notify: false,
         appId: 'tYPXtcSPcNXik1qtQX4PIhRP-gzGzoHsz',
         appKey: '6BGBpTfVhSnm1O6iha084vRu',
-        placeholder: '很赞哦！',
+        placeholder: 'very good',
         avatar:'mm',
         guest_info:guest,
         pageSize:'10' || 10,
