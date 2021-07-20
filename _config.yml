@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 京东金融杭州QA
+title: 中间件QA
 subtitle:
 description: 打造业内高精尖白盒测试团队！
 keywords:
@@ -13,7 +13,7 @@ timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: https://jdjrhzqa.github.io/
+url: https://devqas.com/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
